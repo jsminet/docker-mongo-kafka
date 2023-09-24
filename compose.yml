@@ -1,0 +1,39 @@
+services:
+  traefik:
+    image: traefik:v2.10.4
+    ports:
+      # Exposes port 80 for incomming web requests
+      - 80:80
+      # The Web UI port http://0.0.0.0:8080 (enabled by --api.insecure=true)
+      - 8080:8080
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./app/traefik/conf/traefik.yml:/etc/traefik/traefik.yml
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+    volumes:
+      - mongo:/data/db
+      - ./app/mongo/conf:/etc/mongo
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME
+      - ME_CONFIG_MONGODB_ADMINPASSWORD
+      - ME_CONFIG_MONGODB_URL
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.mongo-express.rule=Host(`$MONGO_EXPRESS_DNS`)"
+        - "traefik.http.routers.mongo-express.entrypoints=web"
+        - "traefik.http.routers.mongo-express.service=mongo-express"
+        - "traefik.http.services.mongo-express.loadbalancer.server.port=8081"
+
+volumes: 
+  mongo:
