@@ -7,6 +7,7 @@ services:
       # The Web UI port http://0.0.0.0:8080 (enabled by --api.insecure=true)
       - 8080:8080
       - 9092:9092
+      - 27017:27017
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
@@ -18,6 +19,11 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.services.mongo.loadbalancer.server.port=27017"
+      - "traefik.tcp.routers.mongo.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mongo.entrypoints=mongo"
     volumes:
       - mongo:/data/db
       - ./app/mongo/conf:/etc/mongo
