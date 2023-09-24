@@ -43,11 +43,11 @@ services:
       - ME_CONFIG_BASICAUTH_PASSWORD
       - ME_CONFIG_REQUEST_SIZE
     labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.mongo-express.rule=Host(`$MONGO_EXPRESS_DNS`)"
-        - "traefik.http.routers.mongo-express.entrypoints=web"
-        - "traefik.http.routers.mongo-express.service=mongo-express"
-        - "traefik.http.services.mongo-express.loadbalancer.server.port=8081"
+      - "traefik.enable=true"
+      - "traefik.http.routers.mongo-express.rule=Host(`$MONGO_EXPRESS_DNS`)"
+      - "traefik.http.routers.mongo-express.entrypoints=web"
+      - "traefik.http.routers.mongo-express.service=mongo-express"
+      - "traefik.http.services.mongo-express.loadbalancer.server.port=8081"
 
   kafka:
     image: bitnami/kafka:3.5.1
@@ -76,11 +76,34 @@ services:
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
       - SERVER_SERVLET_CONTEXT_PATH
     labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.kafka-ui.rule=Host(`$KAFKA_UI_DNS`)"
-        - "traefik.http.routers.kafka-ui.entrypoints=web"
-        - "traefik.http.routers.kafka-ui.service=kafka-ui"
-        - "traefik.http.services.kafka-ui.loadbalancer.server.port=8082"
+      - "traefik.enable=true"
+      - "traefik.http.routers.kafka-ui.rule=Host(`$KAFKA_UI_DNS`)"
+      - "traefik.http.routers.kafka-ui.entrypoints=web"
+      - "traefik.http.routers.kafka-ui.service=kafka-ui"
+      - "traefik.http.services.kafka-ui.loadbalancer.server.port=8082"
+
+  connect:
+    image: debezium/connect
+    environment:
+     - BOOTSTRAP_SERVERS=kafka:9092
+     - GROUP_ID=1
+     - CONFIG_STORAGE_TOPIC=my_connect_configs
+     - OFFSET_STORAGE_TOPIC=my_connect_offsets
+     - STATUS_STORAGE_TOPIC=my_connect_statuses
+     - ENABLE_DEBEZIUM_SCRIPTING=true
+     - CONNECT_REST_EXTENSION_CLASSES=io.debezium.kcrestextension.DebeziumConnectRestExtension
+
+  debezium-ui:
+    image: debezium/debezium-ui
+    environment:
+     - KAFKA_CONNECT_URIS=http://connect:8083
+     - DEPLOYMENT_MODE=default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.debezium-ui.rule=Host(`$DEBEZIUM_UI_DNS`)"
+      - "traefik.http.routers.debezium-ui.entrypoints=web"
+      - "traefik.http.routers.debezium-ui.service=debezium-ui"
+      - "traefik.http.services.debezium-ui.loadbalancer.server.port=8080"
 
 volumes: 
   mongo:
