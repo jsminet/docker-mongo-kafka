@@ -6,6 +6,7 @@ services:
       - 80:80
       # The Web UI port http://0.0.0.0:8080 (enabled by --api.insecure=true)
       - 8080:8080
+      - 9092:9092
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
@@ -28,6 +29,13 @@ services:
       - ME_CONFIG_MONGODB_ADMINUSERNAME
       - ME_CONFIG_MONGODB_ADMINPASSWORD
       - ME_CONFIG_MONGODB_URL
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN
+      - ME_CONFIG_MONGODB_AUTH_USERNAME
+      - ME_CONFIG_MONGODB_AUTH_PASSWORD
+      - ME_CONFIG_BASICAUTH
+      - ME_CONFIG_BASICAUTH_USERNAME
+      - ME_CONFIG_BASICAUTH_PASSWORD
+      - ME_CONFIG_REQUEST_SIZE
     labels:
         - "traefik.enable=true"
         - "traefik.http.routers.mongo-express.rule=Host(`$MONGO_EXPRESS_DNS`)"
@@ -35,5 +43,25 @@ services:
         - "traefik.http.routers.mongo-express.service=mongo-express"
         - "traefik.http.services.mongo-express.loadbalancer.server.port=8081"
 
+  kafka:
+    image: bitnami/kafka:3.5.1
+    environment:
+      - KAFKA_CFG_NODE_ID
+      - KAFKA_CFG_PROCESS_ROLES
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
+      - KAFKA_CFG_LISTENERS
+      - KAFKA_CFG_ADVERTISED_LISTENERS
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.services.kafka.loadbalancer.server.port=9092"
+      - "traefik.tcp.routers.kafka.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.kafka.entrypoints=kafka"
+    volumes:
+      - "kafka_data:/bitnami"
+
 volumes: 
   mongo:
+  kafka_data:
