@@ -76,6 +76,7 @@ services:
       - KAFKA_CLUSTERS_0_NAME
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
       - SERVER_SERVLET_CONTEXT_PATH
+      - DYNAMIC_CONFIG_ENABLED
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.kafka-ui.rule=Host(`$KAFKA_UI_DNS`)"
@@ -88,20 +89,20 @@ services:
     ports:
       - 8083:8083
     environment:
-     - BOOTSTRAP_SERVERS=kafka:9092
-     - GROUP_ID=1
-     - CONFIG_STORAGE_TOPIC=my_connect_configs
-     - OFFSET_STORAGE_TOPIC=my_connect_offsets
-     - STATUS_STORAGE_TOPIC=my_connect_statuses
-     - ENABLE_DEBEZIUM_KC_REST_EXTENSION=true
-     - ENABLE_DEBEZIUM_SCRIPTING=true
-     - CONNECT_REST_EXTENSION_CLASSES=io.debezium.kcrestextension.DebeziumConnectRestExtension
+     - BOOTSTRAP_SERVERS
+     - GROUP_ID
+     - CONFIG_STORAGE_TOPIC
+     - OFFSET_STORAGE_TOPIC
+     - STATUS_STORAGE_TOPIC
+     - ENABLE_DEBEZIUM_KC_REST_EXTENSION
+     - ENABLE_DEBEZIUM_SCRIPTING
+     - CONNECT_REST_EXTENSION_CLASSES
 
   debezium-ui:
     image: debezium/debezium-ui
     environment:
-     - KAFKA_CONNECT_URIS=http://connect:8083
-     - DEPLOYMENT_MODE=default
+     - KAFKA_CONNECT_URIS
+     - DEPLOYMENT_MODE
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.debezium-ui.rule=Host(`$DEBEZIUM_UI_DNS`)"
