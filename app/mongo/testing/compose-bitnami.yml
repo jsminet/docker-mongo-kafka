@@ -41,6 +41,11 @@ services:
       - MONGODB_REPLICA_SET_NAME=replicaset
       - MONGODB_ROOT_PASSWORD=example
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.services.mongo1.loadbalancer.server.port=27017"
+      - "traefik.tcp.routers.mongo1.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mongo1.entrypoints=mongo1"
     volumes:
       - mongo1:/data/db
 

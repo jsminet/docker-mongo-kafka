@@ -10,7 +10,7 @@ api:
 ################################################################
 providers:
   docker:
-    exposedByDefault: true
+    exposedByDefault: false
     swarmMode: false
     watch: true
 ################################################################
@@ -25,3 +25,5 @@ log:
 entryPoints:
   web:
     address: :80
+  mongo1:
+    address: ":27017"
