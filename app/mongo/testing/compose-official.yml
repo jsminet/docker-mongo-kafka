@@ -1,0 +1,72 @@
+services:
+  traefik:
+    image: traefik:v2.10.4
+    ports:
+      # Exposes port 80 for incomming web requests
+      - 80:80
+      # The Web UI port http://0.0.0.0:8080 (enabled by --api.insecure=true)
+      - 8080:8080
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.yml:/etc/traefik/traefik.yml
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME
+      - ME_CONFIG_MONGODB_ADMINPASSWORD
+      - ME_CONFIG_MONGODB_URL
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN
+      - ME_CONFIG_MONGODB_AUTH_USERNAME
+      - ME_CONFIG_MONGODB_AUTH_PASSWORD
+      - ME_CONFIG_BASICAUTH
+      - ME_CONFIG_BASICAUTH_USERNAME
+      - ME_CONFIG_BASICAUTH_PASSWORD
+      - ME_CONFIG_REQUEST_SIZE
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mongo-express.rule=Host(`$MONGO_EXPRESS_DNS`)"
+      - "traefik.http.routers.mongo-express.entrypoints=web"
+      - "traefik.http.routers.mongo-express.service=mongo-express"
+      - "traefik.http.services.mongo-express.loadbalancer.server.port=8081"
+
+  mongo1:
+    image: mongo
+    container_name: mongo1
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - mongo1:/data/db
+    healthcheck:
+      test: test $$(echo "rs.initiate({_id:'my-replica-set',members:[{_id:0,host:\"mongo1:27017\"},{_id:1,host:\"mongo2:27017\"},{_id:2,host:\"mongo3:27017\"}]}).ok || rs.status().ok" | mongo --port 30001 --quiet) -eq 1
+      interval: 10s
+      start_period: 30s
+
+  mongo2:
+    image: mongo
+    container_name: mongo2
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - mongo2:/data/db
+
+  mongo3:
+    image: mongo
+    container_name: mongo3
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - mongo3:/data/db
+
+volumes: 
+  mongo1:
+  mongo2:
+  mongo3:

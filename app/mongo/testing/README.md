@@ -1,0 +1,1 @@
+## Dedicated compose file for mongo DB replica tests
