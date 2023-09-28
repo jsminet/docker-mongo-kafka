@@ -34,16 +34,18 @@ services:
   
   mongo1:
     image: docker.io/bitnami/mongodb:7.0
+    container_name: mongo1
     environment:
       - MONGODB_ADVERTISED_HOSTNAME=mongo1
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_ROOT_PASSWORD=example
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
     volumes:
-      - mongo1:/bitnami/mongodb
+      - mongo1:/data/db
 
   mongo2:
     image: docker.io/bitnami/mongodb:7.0
+    container_name: mongo2
     depends_on:
       - mongo1
     environment:
@@ -55,6 +57,7 @@ services:
 
   mongo3:
     image: docker.io/bitnami/mongodb:7.0
+    container_name: mongo3
     depends_on:
       - mongo1
     environment:
@@ -64,5 +67,7 @@ services:
       - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=example
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
 
-volumes:
+volumes: 
   mongo1:
+  mongo2:
+  mongo3:
