@@ -38,8 +38,9 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD
-    command: ["--replSet", "rs0", "--bind_ip_all"]
+    command: ["--replSet", "rs0", "--bind_ip_all", "--keyFile", "/tmp/keyfile"]
     volumes:
+      - ./keyfile:/tmp/keyfile
       - mongo1:/data/db
     healthcheck:
       test: test $$(echo "rs.initiate({_id:'my-replica-set',members:[{_id:0,host:\"mongo1:27017\"},{_id:1,host:\"mongo2:27017\"},{_id:2,host:\"mongo3:27017\"}]}).ok || rs.status().ok" | mongo --port 30001 --quiet) -eq 1
@@ -52,8 +53,9 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD
-    command: ["--replSet", "rs0", "--bind_ip_all"]
+    command: ["--replSet", "rs0", "--bind_ip_all", "--keyFile", "/tmp/keyfile"]
     volumes:
+      - ./keyfile:/tmp/keyfile
       - mongo2:/data/db
 
   mongo3:
@@ -62,8 +64,9 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD
-    command: ["--replSet", "rs0", "--bind_ip_all"]
+    command: ["--replSet", "rs0", "--bind_ip_all", "--keyFile", "/tmp/keyfile"]
     volumes:
+      - ./keyfile:/tmp/keyfile
       - mongo3:/data/db
 
 volumes: 
