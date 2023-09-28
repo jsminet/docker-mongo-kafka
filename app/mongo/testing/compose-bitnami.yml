@@ -38,6 +38,7 @@ services:
     environment:
       - MONGODB_ADVERTISED_HOSTNAME=mongo1
       - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_REPLICA_SET_NAME=replicaset
       - MONGODB_ROOT_PASSWORD=example
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
     volumes:
