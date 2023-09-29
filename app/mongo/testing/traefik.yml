@@ -10,7 +10,7 @@ api:
 ################################################################
 providers:
   docker:
-    exposedByDefault: false
+    exposedByDefault: true
     swarmMode: false
     watch: true
 ################################################################
