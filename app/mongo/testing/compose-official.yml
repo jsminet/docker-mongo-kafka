@@ -42,7 +42,7 @@ services:
       - "traefik.tcp.routers.mongo1.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.mongo1.entrypoints=mongo1"    
     volumes:
-      - mongo1/data/db
+      - mongo1:/data/db
     healthcheck:
       test: test $$(echo "rs.initiate({_id:'my-replica-set',members:[{_id:0,host:\"mongo1:27017\"},{_id:1,host:\"mongo2:27018\"},{_id:2,host:\"mongo3:27019\"}]}).ok || rs.status().ok" | mongo --port 30001 --quiet) -eq 1
       interval: 10s
