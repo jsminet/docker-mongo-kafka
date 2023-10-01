@@ -34,6 +34,7 @@ services:
 
   mongo1:
     image: mongo:6.0.10
+    hostname: mongo1
     container_name: mongo1
     command: ["--replSet", "my-replica-set", "--bind_ip_all", "--port", "27017"]
     labels:
@@ -50,6 +51,7 @@ services:
 
   mongo2:
     image: mongo:6.0.10
+    hostname: mongo2
     container_name: mongo2
     command: ["--replSet", "my-replica-set", "--bind_ip_all", "--port", "27018"]
     labels:
@@ -63,6 +65,7 @@ services:
 
   mongo3:
     image: mongo:6.0.10
+    hostname: mongo3
     container_name: mongo3
     command: ["--replSet", "my-replica-set", "--bind_ip_all", "--port", "27019"]
     labels:
