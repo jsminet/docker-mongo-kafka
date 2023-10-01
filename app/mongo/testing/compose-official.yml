@@ -34,8 +34,14 @@ services:
 
   mongo1:
     image: mongo:6.0.10
+    container_name: mongo1
     hostname: mongo1
-    command: ["--replSet", "my-replica-set", "--bind_ip_all", "--port", "27017"]
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+      - MONGO_INITDB_DATABASE
+      - MONGO_REPLICA_SET_NAME
+    command: ["--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all", "--port", "27017"]
     labels:
       - "traefik.enable=true"
       - "traefik.tcp.services.mongo1.loadbalancer.server.port=27017"
@@ -50,8 +56,14 @@ services:
 
   mongo2:
     image: mongo:6.0.10
+    container_name: mongo2
     hostname: mongo2
-    command: ["--replSet", "my-replica-set", "--bind_ip_all", "--port", "27018"]
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+      - MONGO_INITDB_DATABASE
+      - MONGO_REPLICA_SET_NAME
+    command: ["--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all", "--port", "27018"]
     labels:
       - "traefik.enable=true"
       - "traefik.tcp.services.mongo2.loadbalancer.server.port=27018"
@@ -62,8 +74,14 @@ services:
 
   mongo3:
     image: mongo:6.0.10
+    container_name: mongo3
     hostname: mongo3
-    command: ["--replSet", "my-replica-set", "--bind_ip_all", "--port", "27019"]
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+      - MONGO_INITDB_DATABASE
+      - MONGO_REPLICA_SET_NAME
+    command: ["--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all", "--port", "27019"]
     labels:
       - "traefik.enable=true"
       - "traefik.tcp.services.mongo3.loadbalancer.server.port=27019"
