@@ -59,7 +59,6 @@ services:
       - mongo1
     environment:
       - MONGODB_ADVERTISED_HOSTNAME=mongo2
-      - MONGODB_PORT_NUMBER=27018
       - MONGODB_REPLICA_SET_MODE=secondary
       - MONGODB_INITIAL_PRIMARY_HOST=mongo1
       - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
@@ -67,7 +66,7 @@ services:
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
     labels:
       - "traefik.enable=true"
-      - "traefik.tcp.services.mongo2.loadbalancer.server.port=27018"
+      - "traefik.tcp.services.mongo2.loadbalancer.server.port=27017"
       - "traefik.tcp.routers.mongo2.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.mongo2.entrypoints=mongo2"
     volumes:
@@ -81,7 +80,6 @@ services:
       - mongo1
     environment:
       - MONGODB_ADVERTISED_HOSTNAME=mongo3
-      - MONGODB_PORT_NUMBER=27019
       - MONGODB_REPLICA_SET_MODE=secondary
       - MONGODB_INITIAL_PRIMARY_HOST=mongo1
       - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
@@ -89,7 +87,7 @@ services:
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
     labels:
       - "traefik.enable=true"
-      - "traefik.tcp.services.mongo3.loadbalancer.server.port=27019"
+      - "traefik.tcp.services.mongo3.loadbalancer.server.port=27017"
       - "traefik.tcp.routers.mongo3.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.mongo3.entrypoints=mongo3"
     volumes:
