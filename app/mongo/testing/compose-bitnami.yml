@@ -70,7 +70,7 @@ services:
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
     labels:
       - "traefik.enable=true"
-      - "traefik.tcp.services.mongo2.loadbalancer.server.port=27017"
+      - "traefik.tcp.services.mongo2.loadbalancer.server.port=27027"
       - "traefik.tcp.routers.mongo2.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.mongo2.entrypoints=mongo2"
     volumes:
@@ -93,7 +93,7 @@ services:
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
     labels:
       - "traefik.enable=true"
-      - "traefik.tcp.services.mongo3.loadbalancer.server.port=27017"
+      - "traefik.tcp.services.mongo3.loadbalancer.server.port=27037"
       - "traefik.tcp.routers.mongo3.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.mongo3.entrypoints=mongo3"
     volumes:

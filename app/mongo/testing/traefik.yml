@@ -26,8 +26,8 @@ entryPoints:
   web:
     address: :80
   mongo1:
-    address: ":27017"
+    address: :27017
   mongo2:
-    address: ":27027"
+    address: :27027
   mongo3:
-    address: ":27037"
+    address: :27037
