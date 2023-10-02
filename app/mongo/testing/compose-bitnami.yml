@@ -7,8 +7,6 @@ services:
       # The Web UI port http://0.0.0.0:8080 (enabled by --api.insecure=true)
       - 8080:8080
       - 27017:27017
-      - 27027:27027
-      - 27037:27037
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
