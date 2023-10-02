@@ -37,9 +37,9 @@ services:
     container_name: mongo1
     hostname: mongo1
     environment:
-      - MONGO_INITDB_ROOT_USERNAME
-      - MONGO_INITDB_ROOT_PASSWORD
-      - MONGO_INITDB_DATABASE
+      #- MONGO_INITDB_ROOT_USERNAME
+      #- MONGO_INITDB_ROOT_PASSWORD
+      #- MONGO_INITDB_DATABASE
       - MONGO_REPLICA_SET_NAME
     command: ["--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all", "--port", "27017"]
     labels:
@@ -50,7 +50,7 @@ services:
     volumes:
       - mongo1:/data/db
     healthcheck:
-      test: test $$(echo "rs.initiate({_id:'my-replica-set',members:[{_id:0,host:\"mongo1:27017\"},{_id:1,host:\"mongo2:27018\"},{_id:2,host:\"mongo3:27019\"}]}).ok || rs.status().ok" | mongo -u $${MONGO_INITDB_ROOT_USERNAME} -p $${MONGO_INITDB_ROOT_PASSWORD} --port 27017 --quiet) -eq 1
+      test: test $$(echo "rs.initiate({_id:'${MONGO_REPLICA_SET_NAME}',members:[{_id:0,host:\"mongo1:27017\"},{_id:1,host:\"mongo2:27027\"},{_id:2,host:\"mongo3:27037\"}]}).ok || rs.status().ok" | mongo --port 27017 --quiet) -eq 1
       interval: 10s
       start_period: 30s
 
@@ -59,14 +59,14 @@ services:
     container_name: mongo2
     hostname: mongo2
     environment:
-      - MONGO_INITDB_ROOT_USERNAME
-      - MONGO_INITDB_ROOT_PASSWORD
-      - MONGO_INITDB_DATABASE
+      #- MONGO_INITDB_ROOT_USERNAME
+      #- MONGO_INITDB_ROOT_PASSWORD
+      #- MONGO_INITDB_DATABASE
       - MONGO_REPLICA_SET_NAME
-    command: ["--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all", "--port", "27018"]
+    command: ["--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all", "--port", "27027"]
     labels:
       - "traefik.enable=true"
-      - "traefik.tcp.services.mongo2.loadbalancer.server.port=27018"
+      - "traefik.tcp.services.mongo2.loadbalancer.server.port=27017"
       - "traefik.tcp.routers.mongo2.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.mongo2.entrypoints=mongo2"
     volumes:
@@ -77,14 +77,14 @@ services:
     container_name: mongo3
     hostname: mongo3
     environment:
-      - MONGO_INITDB_ROOT_USERNAME
-      - MONGO_INITDB_ROOT_PASSWORD
-      - MONGO_INITDB_DATABASE
+      #- MONGO_INITDB_ROOT_USERNAME
+      #- MONGO_INITDB_ROOT_PASSWORD
+      #- MONGO_INITDB_DATABASE
       - MONGO_REPLICA_SET_NAME
-    command: ["--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all", "--port", "27019"]
+    command: ["--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all", "--port", "27037"]
     labels:
       - "traefik.enable=true"
-      - "traefik.tcp.services.mongo3.loadbalancer.server.port=27019"
+      - "traefik.tcp.services.mongo3.loadbalancer.server.port=27017"
       - "traefik.tcp.routers.mongo3.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.mongo3.entrypoints=mongo3"
     volumes:
