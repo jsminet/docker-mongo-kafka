@@ -49,8 +49,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.tcp.services.mongo1.loadbalancer.server.port=27017"
-      - "traefik.tcp.routers.mongo1.rule=HostSNI(`*`)"
-      - "traefik.tcp.routers.mongo1.entrypoints=mongo1"
+      - "traefik.tcp.routers.mongo1.rule=HostSNI(`$MONGO1_DNS`)"
+      - "traefik.tcp.routers.mongo1.entrypoints=mongo"
     volumes:
       - mongo1:/data/db
 
@@ -70,8 +70,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.tcp.services.mongo2.loadbalancer.server.port=27017"
-      - "traefik.tcp.routers.mongo2.rule=HostSNI(`*`)"
-      - "traefik.tcp.routers.mongo2.entrypoints=mongo2"
+      - "traefik.tcp.routers.mongo2.rule=HostSNI(`$MONGO2_DNS`)"
+      - "traefik.tcp.routers.mongo2.entrypoints=mongo"
     volumes:
       - mongo2:/data/db
 
@@ -91,8 +91,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.tcp.services.mongo3.loadbalancer.server.port=27017"
-      - "traefik.tcp.routers.mongo3.rule=HostSNI(`*`)"
-      - "traefik.tcp.routers.mongo3.entrypoints=mongo3"
+      - "traefik.tcp.routers.mongo3.rule=HostSNI(`$MONGO3_DNS`)"
+      - "traefik.tcp.routers.mongo3.entrypoints=mongo"
     volumes:
       - mongo3:/data/db
 
