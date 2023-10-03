@@ -25,5 +25,9 @@ log:
 entryPoints:
   web:
     address: :80
-  mongo:
-    address: :27017
+  mongo1:
+    address: :30001
+  mongo2:
+    address: :30002
+  mongo3:
+    address: :30003
