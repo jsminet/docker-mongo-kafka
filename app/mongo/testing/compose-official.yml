@@ -61,7 +61,7 @@ services:
       - "traefik.enable=true"
       - "traefik.tcp.services.mongo2.loadbalancer.server.port=30002"
       - "traefik.tcp.routers.mongo2.rule=HostSNI(`*`)"
-      - "traefik.tcp.routers.mongo2.entrypoints=mongo"
+      - "traefik.tcp.routers.mongo2.entrypoints=mongo2"
     volumes:
       - mongo2:/data/db
 
@@ -74,7 +74,7 @@ services:
       - "traefik.enable=true"
       - "traefik.tcp.services.mongo3.loadbalancer.server.port=30003"
       - "traefik.tcp.routers.mongo3.rule=HostSNI(`*`)"
-      - "traefik.tcp.routers.mongo3.entrypoints=mongo"
+      - "traefik.tcp.routers.mongo3.entrypoints=mongo3"
     volumes:
       - mongo3:/data/db
 
