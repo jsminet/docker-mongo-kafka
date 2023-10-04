@@ -16,6 +16,8 @@ services:
       - ./app/traefik/conf/traefik.yml:/etc/traefik/traefik.yml
 
   mongodb-primary:
+    container_name: mongodb-primary
+    hostname: mongodb-primary
     image: docker.io/bitnami/mongodb:7.0
     environment:
       - MONGODB_ADVERTISED_HOSTNAME=$MONGO_PRIMARY
@@ -33,6 +35,8 @@ services:
       #- ./app/mongo/dump:/docker-entrypoint-initdb.d
 
   mongodb-secondary:
+    container_name: mongodb-secondary
+    hostname: mongodb-secondary
     image: docker.io/bitnami/mongodb:7.0
     depends_on:
       - mongodb-primary
@@ -50,6 +54,8 @@ services:
       - "traefik.tcp.routers.mongodb-secondary.entrypoints=mongodb-secondary"
 
   mongodb-arbiter:
+    container_name: mongodb-arbiter
+    hostname: mongodb-arbiter
     image: docker.io/bitnami/mongodb:7.0
     depends_on:
       - mongodb-primary
