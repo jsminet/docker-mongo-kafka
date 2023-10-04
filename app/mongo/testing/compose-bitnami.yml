@@ -7,94 +7,56 @@ services:
       # The Web UI port http://0.0.0.0:8080 (enabled by --api.insecure=true)
       - 8080:8080
       - 27017:27017
+      - 27027:27027
+      - 27037:27037
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.yml:/etc/traefik/traefik.yml
 
-  mongo-express:
-    image: mongo-express
-    restart: always
-    environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME
-      - ME_CONFIG_MONGODB_ADMINPASSWORD
-      - ME_CONFIG_MONGODB_URL
-      - ME_CONFIG_MONGODB_ENABLE_ADMIN
-      - ME_CONFIG_MONGODB_AUTH_USERNAME
-      - ME_CONFIG_MONGODB_AUTH_PASSWORD
-      - ME_CONFIG_BASICAUTH
-      - ME_CONFIG_BASICAUTH_USERNAME
-      - ME_CONFIG_BASICAUTH_PASSWORD
-      - ME_CONFIG_REQUEST_SIZE
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.mongo-express.rule=Host(`$MONGO_EXPRESS_DNS`)"
-      - "traefik.http.routers.mongo-express.entrypoints=web"
-      - "traefik.http.routers.mongo-express.service=mongo-express"
-      - "traefik.http.services.mongo-express.loadbalancer.server.port=8081"
-  
-  mongo1:
+  mongodb-primary:
     image: docker.io/bitnami/mongodb:6.0.10
-    hostname: mongo1
-    container_name: mongo1
     environment:
-      - MONGODB_ADVERTISED_HOSTNAME=mongo1
-      - MONGODB_PORT_NUMBER=27017
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
       - MONGODB_REPLICA_SET_MODE=primary
-      - MONGODB_REPLICA_SET_NAME=replicaset
-      - MONGODB_ROOT_PASSWORD=example
+      - MONGODB_ROOT_PASSWORD=prisma
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
     labels:
       - "traefik.enable=true"
-      - "traefik.tcp.services.mongo1.loadbalancer.server.port=27017"
-      - "traefik.tcp.routers.mongo1.rule=HostSNI(`$MONGO1_DNS`)"
-      - "traefik.tcp.routers.mongo1.entrypoints=mongo"
-    volumes:
-      - mongo1:/data/db
+      - "traefik.tcp.services.mongodb-primary.loadbalancer.server.port=27017"
+      - "traefik.tcp.routers.mongodb-primary.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mongodb-primary.entrypoints=mongodb-primary"
 
-  mongo2:
+  mongodb-secondary:
     image: docker.io/bitnami/mongodb:6.0.10
-    hostname: mongo2
-    container_name: mongo2
     depends_on:
-      - mongo1
+      - mongodb-primary
     environment:
-      - MONGODB_ADVERTISED_HOSTNAME=mongo2
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary
       - MONGODB_REPLICA_SET_MODE=secondary
-      - MONGODB_INITIAL_PRIMARY_HOST=mongo1
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
       - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
-      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=example
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=prisma
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
     labels:
       - "traefik.enable=true"
-      - "traefik.tcp.services.mongo2.loadbalancer.server.port=27017"
-      - "traefik.tcp.routers.mongo2.rule=HostSNI(`$MONGO2_DNS`)"
-      - "traefik.tcp.routers.mongo2.entrypoints=mongo"
-    volumes:
-      - mongo2:/data/db
+      - "traefik.tcp.services.mongodb-secondary.loadbalancer.server.port=27017"
+      - "traefik.tcp.routers.mongodb-secondary.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mongodb-secondary.entrypoints=mongodb-secondary"
 
-  mongo3:
+  mongodb-arbiter:
     image: docker.io/bitnami/mongodb:6.0.10
-    hostname: mongo3
-    container_name: mongo3
     depends_on:
-      - mongo1
+      - mongodb-primary
     environment:
-      - MONGODB_ADVERTISED_HOSTNAME=mongo3
-      - MONGODB_REPLICA_SET_MODE=secondary
-      - MONGODB_INITIAL_PRIMARY_HOST=mongo1
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-arbiter
+      - MONGODB_REPLICA_SET_MODE=arbiter
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
       - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
-      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=example
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=prisma
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
     labels:
       - "traefik.enable=true"
-      - "traefik.tcp.services.mongo3.loadbalancer.server.port=27017"
-      - "traefik.tcp.routers.mongo3.rule=HostSNI(`$MONGO3_DNS`)"
-      - "traefik.tcp.routers.mongo3.entrypoints=mongo"
-    volumes:
-      - mongo3:/data/db
-
-volumes: 
-  mongo1:
-  mongo2:
-  mongo3:
+      - "traefik.tcp.services.mongodb-arbiter.loadbalancer.server.port=27017"
+      - "traefik.tcp.routers.mongodb-arbiter.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mongodb-arbiter.entrypoints=mongodb-arbiter"

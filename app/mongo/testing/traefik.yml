@@ -25,9 +25,9 @@ log:
 entryPoints:
   web:
     address: :80
-  mongo1:
-    address: :30001
-  mongo2:
-    address: :30002
-  mongo3:
-    address: :30003
+  mongodb-primary:
+    address: :27017
+  mongodb-secondary:
+    address: :27027
+  mongodb-arbiter:
+    address: :27037
