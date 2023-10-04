@@ -15,7 +15,7 @@ services:
       - ./traefik.yml:/etc/traefik/traefik.yml
 
   mongodb-primary:
-    image: docker.io/bitnami/mongodb:6.0.10
+    image: docker.io/bitnami/mongodb:7.0
     environment:
       - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
       - MONGODB_REPLICA_SET_MODE=primary
@@ -28,7 +28,7 @@ services:
       - "traefik.tcp.routers.mongodb-primary.entrypoints=mongodb-primary"
 
   mongodb-secondary:
-    image: docker.io/bitnami/mongodb:6.0.10
+    image: docker.io/bitnami/mongodb:7.0
     depends_on:
       - mongodb-primary
     environment:
@@ -45,7 +45,7 @@ services:
       - "traefik.tcp.routers.mongodb-secondary.entrypoints=mongodb-secondary"
 
   mongodb-arbiter:
-    image: docker.io/bitnami/mongodb:6.0.10
+    image: docker.io/bitnami/mongodb:7.0
     depends_on:
       - mongodb-primary
     environment:
@@ -60,3 +60,4 @@ services:
       - "traefik.tcp.services.mongodb-arbiter.loadbalancer.server.port=27017"
       - "traefik.tcp.routers.mongodb-arbiter.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.mongodb-arbiter.entrypoints=mongodb-arbiter"
+      
