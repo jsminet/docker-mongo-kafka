@@ -1,0 +1,38 @@
+services:
+  mongodb-primary:
+    image: docker.io/bitnami/mongodb:6.0.10
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_ROOT_PASSWORD=prisma
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+    ports:
+      - 27017:27017
+
+  mongodb-secondary:
+    image: docker.io/bitnami/mongodb:6.0.10
+    depends_on:
+      - mongodb-primary
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=prisma
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+    ports:
+      - 27027:27017
+
+  mongodb-arbiter:
+    image: docker.io/bitnami/mongodb:6.0.10
+    depends_on:
+      - mongodb-primary
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-arbiter
+      - MONGODB_REPLICA_SET_MODE=arbiter
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=prisma
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+    ports:
+      - 27037:27017
