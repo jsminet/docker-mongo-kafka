@@ -35,8 +35,12 @@ entryPoints:
     address: :443
   kafka:
     address: ":9092"
-  mongo:
-    address: ":27017"
+  mongodb-primary:
+    address: :27017
+  mongodb-secondary:
+    address: :27027
+  mongodb-arbiter:
+    address: :27037
 
     
 ################################################################

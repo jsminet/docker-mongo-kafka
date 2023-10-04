@@ -8,26 +8,63 @@ services:
       - 8080:8080
       - 9092:9092
       - 27017:27017
+      - 27027:27027
+      - 27037:27037
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
       - ./app/traefik/conf/traefik.yml:/etc/traefik/traefik.yml
 
-  mongo:
-    image: mongo
-    restart: always
+  mongodb-primary:
+    image: docker.io/bitnami/mongodb:7.0
     environment:
-      - MONGO_INITDB_ROOT_USERNAME
-      - MONGO_INITDB_ROOT_PASSWORD
+      - MONGODB_ADVERTISED_HOSTNAME=$MONGO_PRIMARY
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_ROOT_PASSWORD=toor
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
     labels:
       - "traefik.enable=true"
-      - "traefik.tcp.services.mongo.loadbalancer.server.port=27017"
-      - "traefik.tcp.routers.mongo.rule=HostSNI(`*`)"
-      - "traefik.tcp.routers.mongo.entrypoints=mongo"
+      - "traefik.tcp.services.mongodb-primary.loadbalancer.server.port=27017"
+      - "traefik.tcp.routers.mongodb-primary.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mongodb-primary.entrypoints=mongodb-primary"
     volumes:
-      - mongo:/data/db
-      - ./app/mongo/conf:/etc/mongo
-      - ./app/mongo/dump:/docker-entrypoint-initdb.d
+      - mongodb_data:/data/db
+      #- ./app/mongo/conf:/etc/mongo
+      #- ./app/mongo/dump:/docker-entrypoint-initdb.d
+
+  mongodb-secondary:
+    image: docker.io/bitnami/mongodb:7.0
+    depends_on:
+      - mongodb-primary
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=$MONGO_SECONDARY
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=toor
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.services.mongodb-secondary.loadbalancer.server.port=27017"
+      - "traefik.tcp.routers.mongodb-secondary.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mongodb-secondary.entrypoints=mongodb-secondary"
+
+  mongodb-arbiter:
+    image: docker.io/bitnami/mongodb:7.0
+    depends_on:
+      - mongodb-primary
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=$MONGO_ARBITER_DNS
+      - MONGODB_REPLICA_SET_MODE=arbiter
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=toor
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.services.mongodb-arbiter.loadbalancer.server.port=27017"
+      - "traefik.tcp.routers.mongodb-arbiter.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mongodb-arbiter.entrypoints=mongodb-arbiter"
 
   mongo-express:
     image: mongo-express
@@ -113,5 +150,5 @@ services:
       - "traefik.http.services.debezium-ui.loadbalancer.server.port=8080"
 
 volumes: 
-  mongo:
+  mongodb_data:
   kafka_data:
