@@ -18,11 +18,12 @@ services:
   mongodb-primary:
     container_name: mongodb-primary
     hostname: mongodb-primary
-    image: docker.io/bitnami/mongodb:7.0
+    image: docker.io/bitnami/mongodb:6.0.10
     environment:
       - MONGODB_ADVERTISED_HOSTNAME=$MONGO_PRIMARY
       - MONGODB_REPLICA_SET_MODE=primary
-      - MONGODB_ROOT_PASSWORD=toor
+      - MONGODB_ROOT_USER
+      - MONGODB_ROOT_PASSWORD
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
     labels:
       - "traefik.enable=true"
@@ -37,7 +38,7 @@ services:
   mongodb-secondary:
     container_name: mongodb-secondary
     hostname: mongodb-secondary
-    image: docker.io/bitnami/mongodb:7.0
+    image: docker.io/bitnami/mongodb:6.0.10
     depends_on:
       - mongodb-primary
     environment:
@@ -45,7 +46,7 @@ services:
       - MONGODB_REPLICA_SET_MODE=secondary
       - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
       - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
-      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=toor
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=$MONGODB_ROOT_PASSWORD
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
     labels:
       - "traefik.enable=true"
@@ -56,7 +57,7 @@ services:
   mongodb-arbiter:
     container_name: mongodb-arbiter
     hostname: mongodb-arbiter
-    image: docker.io/bitnami/mongodb:7.0
+    image: docker.io/bitnami/mongodb:6.0.10
     depends_on:
       - mongodb-primary
     environment:
@@ -64,7 +65,7 @@ services:
       - MONGODB_REPLICA_SET_MODE=arbiter
       - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
       - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
-      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=toor
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=$MONGODB_ROOT_PASSWORD
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
     labels:
       - "traefik.enable=true"
