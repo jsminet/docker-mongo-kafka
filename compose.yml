@@ -20,7 +20,7 @@ services:
     hostname: mongodb-primary
     image: docker.io/bitnami/mongodb:6.0.10
     environment:
-      - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
+      - MONGODB_ADVERTISED_HOSTNAME=$MONGO_PRIMARY_DNS
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_ROOT_USER
       - MONGODB_ROOT_PASSWORD
@@ -42,7 +42,7 @@ services:
     depends_on:
       - mongodb-primary
     environment:
-      - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary
+      - MONGODB_ADVERTISED_HOSTNAME=$MONGO_SECONDARY_DNS
       - MONGODB_REPLICA_SET_MODE=secondary
       - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
       - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
@@ -61,7 +61,7 @@ services:
     depends_on:
       - mongodb-primary
     environment:
-      - MONGODB_ADVERTISED_HOSTNAME=mongodb-arbiter
+      - MONGODB_ADVERTISED_HOSTNAME=$MONGO_ARBITER_DNS
       - MONGODB_REPLICA_SET_MODE=arbiter
       - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
       - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
