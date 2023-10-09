@@ -1,13 +1,19 @@
 {
     "name": "mongodb-connector",
     "config": {
-        "connector.class" : "io.debezium.connector.mongodb.MongoDbConnector",
-        "tasks.max" : "1",
-        "mongodb.connection.string" : "mongodb://mongo:27017/?replicaSet=rs0",
-        "mongodb.hosts": "mongo:27017",
-        "topic.prefix" : "dbserver1",
-        "mongodb.user" : "root",
-        "mongodb.password" : "example",
-        "database.include.list" : "test"
+        "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+        "connector.displayName": "MongoDB",
+        "topic.creation.default.partitions": "-1",
+        "mongodb.connection.string": "mongodb://root:toor@mongodb-primary:27017/?replicaSet=replicaset&authSource=admin",
+        "mongodb.password": "****",
+        "mongodb.user": "root",
+        "topic.creation.mongo.include": "",
+        "connector.id": "mongodb",
+        "topic.creation.groups": "mongo",
+        "topic.prefix": "mongodb",
+        "topic.creation.default.replication.factor": "-1",
+        "name": "mongo-db-connector",
+        "mongodb.hosts": "mongodb-primary:27017",
+        "topic.creation.mongo.exclude": ""
     }
 }

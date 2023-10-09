@@ -132,7 +132,9 @@ services:
       - "traefik.http.services.kafka-ui.loadbalancer.server.port=8080"
 
   connect:
-    image: debezium/connect
+    image: debezium/connect-jdbc
+    build:
+      context: ./app/debezium-connect
     ports:
       - 8083:8083
     environment:
@@ -145,7 +147,6 @@ services:
      - ENABLE_DEBEZIUM_SCRIPTING
      - CONNECT_REST_EXTENSION_CLASSES
      - CONNECT_TOPIC_CREATION_ENABLE 
-
 
   debezium-ui:
     image: debezium/debezium-ui
