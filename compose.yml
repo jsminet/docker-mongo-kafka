@@ -18,7 +18,7 @@ services:
   mongodb-primary:
     container_name: mongodb-primary
     hostname: mongodb-primary
-    image: docker.io/bitnami/mongodb:6.0.10
+    image: docker.io/bitnami/mongodb:7.0
     environment:
       - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
       - MONGODB_REPLICA_SET_MODE=primary
@@ -39,7 +39,7 @@ services:
   mongodb-secondary:
     container_name: mongodb-secondary
     hostname: mongodb-secondary
-    image: docker.io/bitnami/mongodb:6.0.10
+    image: docker.io/bitnami/mongodb:7.0
     depends_on:
       - mongodb-primary
     environment:
@@ -59,7 +59,7 @@ services:
   mongodb-arbiter:
     container_name: mongodb-arbiter
     hostname: mongodb-arbiter
-    image: docker.io/bitnami/mongodb:6.0.10
+    image: docker.io/bitnami/mongodb:7.0
     depends_on:
       - mongodb-primary
     environment:
