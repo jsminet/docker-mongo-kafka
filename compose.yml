@@ -20,18 +20,19 @@ services:
     hostname: mongodb-primary
     image: docker.io/bitnami/mongodb:6.0.10
     environment:
-      - MONGODB_ADVERTISED_HOSTNAME=$MONGO_PRIMARY_DNS
+      #- MONGODB_ADVERTISED_HOSTNAME=$MONGO_PRIMARY_DNS
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_ROOT_USER
       - MONGODB_ROOT_PASSWORD
-      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+      - MONGODB_REPLICA_SET_KEY
+      - MONGODB_SYSTEM_LOG_VERBOSITY
     labels:
       - "traefik.enable=true"
       - "traefik.tcp.services.mongodb-primary.loadbalancer.server.port=27017"
       - "traefik.tcp.routers.mongodb-primary.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.mongodb-primary.entrypoints=mongodb-primary"
     volumes:
-      - mongodb_data:/data/db
+      - mongodb_data:/bitnami/mongodb
       #- ./app/mongo/conf:/etc/mongo
       #- ./app/mongo/dump:/docker-entrypoint-initdb.d
 
@@ -42,12 +43,13 @@ services:
     depends_on:
       - mongodb-primary
     environment:
-      - MONGODB_ADVERTISED_HOSTNAME=$MONGO_SECONDARY_DNS
+      #- MONGODB_ADVERTISED_HOSTNAME=$MONGO_SECONDARY_DNS
       - MONGODB_REPLICA_SET_MODE=secondary
       - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
       - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
       - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=$MONGODB_ROOT_PASSWORD
-      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+      - MONGODB_REPLICA_SET_KEY
+      - MONGODB_SYSTEM_LOG_VERBOSITY
     labels:
       - "traefik.enable=true"
       - "traefik.tcp.services.mongodb-secondary.loadbalancer.server.port=27017"
@@ -61,12 +63,13 @@ services:
     depends_on:
       - mongodb-primary
     environment:
-      - MONGODB_ADVERTISED_HOSTNAME=$MONGO_ARBITER_DNS
+      #- MONGODB_ADVERTISED_HOSTNAME=$MONGO_ARBITER_DNS
       - MONGODB_REPLICA_SET_MODE=arbiter
       - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
       - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
       - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=$MONGODB_ROOT_PASSWORD
-      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+      - MONGODB_REPLICA_SET_KEY
+      - MONGODB_SYSTEM_LOG_VERBOSITY
     labels:
       - "traefik.enable=true"
       - "traefik.tcp.services.mongodb-arbiter.loadbalancer.server.port=27017"
