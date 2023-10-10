@@ -34,7 +34,7 @@ services:
     volumes:
       - mongodb_data:/bitnami/mongodb
       #- ./app/mongo/conf:/etc/mongo
-      #- ./app/mongo/dump:/docker-entrypoint-initdb.d
+      - ./app/mongo/dump:/docker-entrypoint-initdb.d
 
   mongodb-secondary:
     container_name: mongodb-secondary
