@@ -35,6 +35,8 @@ entryPoints:
     address: :443
   kafka:
     address: ":9092"
+  postgres:
+    address: ":5432"
   mongodb-primary:
     address: :27017
   mongodb-secondary:
