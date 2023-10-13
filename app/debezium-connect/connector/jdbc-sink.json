@@ -1,0 +1,19 @@
+{
+  "name": "jdbc-sink",
+  "config": {
+    "topic.prefix": "customers",
+    "database.hostname": "postgres",
+    "database.user": "pguser",
+    "database.password": "pgpass",
+    "database.dbname": "inventorydb",
+    "auto.create": "true",
+    "auto.evolve": "true",
+    "insert.mode": "upsert",
+    "delete.enabled": "true",
+    "pk.fields": "id",
+    "pk.mode": "record_key",
+    "transforms": "mongoflatten",
+    "transforms.mongoflatten.type": "io.debezium.connector.mongodb.transforms.ExtractNewDocumentState",
+    "transforms.mongoflatten.drop.tombstones": "false"
+  }
+}
