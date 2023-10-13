@@ -162,6 +162,8 @@ services:
       - "traefik.http.services.debezium-ui.loadbalancer.server.port=8080"
 
   postgres:
+    container_name: postgres
+    hostname: postgres
     image: quay.io/debezium/postgres:16-alpine
     environment:
      - POSTGRES_USER=pguser
