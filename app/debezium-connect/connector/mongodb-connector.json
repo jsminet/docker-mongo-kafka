@@ -1,18 +1,17 @@
 {
-  "name": "mongodb-connector",
+  "name": "inventory-connector",
   "config": {
-    "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
-    "connector.displayName": "MongoDB",
-    "mongodb.connection.string": "mongodb://root:toor@mongodb-primary:27017,mongodb-secondary:27027,mongodb-arbiter:27037/?replicaSet=replicaset&authSource=admin",
-    "mongodb.password": "toor",
-    "mongodb.user": "root",
-    "transforms": "route",
-    "connector.id": "mongodb",
-    "transforms.route.type": "org.apache.kafka.connect.transforms.RegexRouter",
-    "topic.prefix": "mongodb",
-    "transforms.route.regex": "([^.]+)\\\\.([^.]+)\\\\.([^.]+)",
-    "name": "mongo-db-connector",
-    "transforms.route.replacement": "$3",
-    "mongodb.hosts": "mongodb-primary:27017"
+      "connector.class" : "io.debezium.connector.mongodb.MongoDbConnector",
+      "tasks.max" : "1",
+      "topic.prefix" : "dbserver1",
+      "mongodb.connection.string" : "mongodb://root:toor@mongodb-primary:27017,mongodb-secondary:27027,mongodb-arbiter:27037/?replicaSet=replicaset&authSource=admin",
+      "mongodb.user" : "root",
+      "mongodb.password" : "toor",
+      "database.include.list" : "inventory",
+      "schema.history.internal.kafka.bootstrap.servers" : "kafka:9092",
+      "transforms": "route",
+      "transforms.route.type" : "org.apache.kafka.connect.transforms.RegexRouter",
+      "transforms.route.regex" : "([^.]+)\\.([^.]+)\\.([^.]+)",
+      "transforms.route.replacement" : "$3"
   }
 }
