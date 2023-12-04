@@ -15,6 +15,7 @@
       "transforms.mongoflatten.type" : "io.debezium.connector.mongodb.transforms.ExtractNewDocumentState",
       "transforms.mongoflatten.flatten.struct": "true",
       "transforms.mongoflatten.flatten.struct.delimiter": "_",
-      "transforms.mongoflatten.drop.tombstones": "false"
+      "transforms.mongoflatten.drop.tombstones": "false",
+      "transforms.mongoflatten.array.encoding": "document"
   }
 }
