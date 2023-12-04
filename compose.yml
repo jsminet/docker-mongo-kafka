@@ -135,9 +135,11 @@ services:
   connect:
     container_name: connect
     hostname: connect
-    image: debezium/connect-jdbc:2.4.1.Final
+    image: debezium/connect-jdbc:$DEBEZIUM_VERSION
     build:
       context: ./app/debezium-connect
+      args:
+        - DEBEZIUM_VERSION
     environment:
      - BOOTSTRAP_SERVERS
      - GROUP_ID
