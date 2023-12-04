@@ -135,7 +135,7 @@ services:
   connect:
     container_name: connect
     hostname: connect
-    image: debezium/connect-jdbc
+    image: debezium/connect-jdbc:2.4.1.Final
     build:
       context: ./app/debezium-connect
     environment:
