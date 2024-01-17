@@ -8,6 +8,7 @@ Sending data to mongo db then forward it to postgres passing by kafka cluster
 - Traefik as an tcp/http edge proxy for mongo express / kafka UI http access / debezium kafka connect
 - Mongo DB replica set deployment
 - Mongo DB new document state extraction (SMT)
+- Get document pre and post images using [MongoDB 6.0 change stream events](https://www.mongodb.com/docs/manual/reference/command/collMod/#mongodb-collflag-changeStreamPreAndPostImages) capabilities
         
 ## 🛠️ Tech Stack
 - [Traefik](https://doc.traefik.io/traefik/)
